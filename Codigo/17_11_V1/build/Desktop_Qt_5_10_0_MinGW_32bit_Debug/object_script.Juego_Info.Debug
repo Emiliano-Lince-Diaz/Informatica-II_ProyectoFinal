@@ -1,0 +1,12 @@
+INPUT(
+./debug\Dificultad.o
+./debug\Entidad.o
+./debug\Friccion.o
+./debug\Modelofisico.o
+./debug\MovimientoParabolico.o
+./debug\Personaje.o
+./debug\Viscosidad.o
+./debug\main.o
+./debug\mainwindow.o
+./debug\moc_mainwindow.o
+);
