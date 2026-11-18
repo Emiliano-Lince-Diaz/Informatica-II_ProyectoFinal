@@ -1,0 +1,15 @@
+INPUT(
+./release\Dificultad.o
+./release\Entidad.o
+./release\Friccion.o
+./release\Gift.o
+./release\GiftFortachon.o
+./release\GiftSaltarin.o
+./release\Modelofisico.o
+./release\MovimientoParabolico.o
+./release\Personaje.o
+./release\Viscosidad.o
+./release\main.o
+./release\mainwindow.o
+./release\moc_mainwindow.o
+);
