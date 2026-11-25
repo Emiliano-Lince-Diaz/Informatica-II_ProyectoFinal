@@ -17,14 +17,21 @@ SOURCES += \
     Gift.cpp \
     GiftFortachon.cpp \
     GiftSaltarin.cpp \
+    Juego.cpp \
+    Lodazal.cpp \
     Modelofisico.cpp \
+    Mono.cpp \
     MovimientoParabolico.cpp \
     Nivel.cpp \
+    NivelRibera.cpp \
     Percepcion.cpp \
     Personaje.cpp \
+    Plataforma.cpp \
     Proyectil.cpp \
     Razonamiento.cpp \
+    Resbaladero.cpp \
     Trampa.cpp \
+    Vibora.cpp \
     Viscosidad.cpp \
     main.cpp \
     mainwindow.cpp
@@ -41,14 +48,21 @@ HEADERS += \
     Gift.h \
     GiftFortachon.h \
     GiftSaltarin.h \
+    Juego.h \
+    Lodazal.h \
     Modelofisico.h \
+    Mono.h \
     MovimientoParabolico.h \
     Nivel.h \
+    NivelRibera.h \
     Percepcion.h \
     Personaje.h \
+    Plataforma.h \
     Proyectil.h \
     Razonamiento.h \
+    Resbaladero.h \
     Trampa.h \
+    Vibora.h \
     Viscosidad.h \
     mainwindow.h
 
