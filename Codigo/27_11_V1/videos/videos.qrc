@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/videos">
+        <file>01_intro.gif</file>
+        <file>02_transicion.gif</file>
+        <file>03_victoria.gif</file>
+        <file>04_game_over.gif</file>
+    </qresource>
+</RCC>
