@@ -3,21 +3,43 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QAudioDevice>
+#include <QMediaDevices>
+#include <QDebug>
 #include <QUrl>
+#include <stdexcept>
 
 GestorAudio::GestorAudio(QObject *parent)
     : QObject(parent),
     silenciado(false),
     enPausa(false),
-    reproductorMusica(new QSoundEffect(this)),
-    reproductorAmbiente(new QSoundEffect(this)),
-    reproductorCinematica(new QSoundEffect(this)) {
+    reproductorMusica(new QMediaPlayer(this)),
+    reproductorAmbiente(new QMediaPlayer(this)),
+    reproductorCinematica(new QMediaPlayer(this)),
+    salidaMusica(new QAudioOutput(this)),
+    salidaAmbiente(new QAudioOutput(this)),
+    salidaCinematica(new QAudioOutput(this)) {
 
     reloj.start();
 
-    reproductorMusica->setLoopCount(QSoundEffect::Infinite);
-    reproductorAmbiente->setLoopCount(QSoundEffect::Infinite);
-    reproductorCinematica->setLoopCount(1);
+    reproductorMusica->setAudioOutput(salidaMusica);
+    reproductorAmbiente->setAudioOutput(salidaAmbiente);
+    reproductorCinematica->setAudioOutput(salidaCinematica);
+    reproductorMusica->setLoops(QMediaPlayer::Infinite);
+    reproductorAmbiente->setLoops(QMediaPlayer::Infinite);
+    reproductorCinematica->setLoops(1);
+    connect(reproductorMusica, &QMediaPlayer::errorOccurred, this,
+            [this](QMediaPlayer::Error, const QString &mensaje) {
+                qWarning() << "Error de musica:" << mensaje;
+            });
+    connect(reproductorAmbiente, &QMediaPlayer::errorOccurred, this,
+            [this](QMediaPlayer::Error, const QString &mensaje) {
+                qWarning() << "Error de ambiente:" << mensaje;
+            });
+    connect(reproductorCinematica, &QMediaPlayer::errorOccurred, this,
+            [this](QMediaPlayer::Error, const QString &mensaje) {
+                qWarning() << "Error de audio de cinematica:" << mensaje;
+            });
 }
 
 GestorAudio::~GestorAudio() {
@@ -27,6 +49,10 @@ GestorAudio::~GestorAudio() {
 }
 
 QString GestorAudio::buscarCarpetaBase() const {
+    if (QFile::exists(":/audio/efectos/menu_confirmar.wav")) {
+        return ":/audio";
+    }
+
     const QString appDir = QCoreApplication::applicationDirPath();
     QStringList rutasPosibles = {
         appDir + "/Audio_Kapax",
@@ -50,9 +76,13 @@ QString GestorAudio::buscarCarpetaBase() const {
 }
 
 void GestorAudio::inicializar() {
+    if (QMediaDevices::audioOutputs().isEmpty()) {
+        qWarning() << "No se detecto ningun dispositivo de salida de audio.";
+    }
+
     carpetaBase = buscarCarpetaBase();
     if (carpetaBase.isEmpty()) {
-        return;
+        throw std::runtime_error("No se encontro la carpeta Audio_Kapax/efectos/");
     }
 
     // Precargar efectos cortos (~1.6 MB en total) para respuesta instantánea sin lag
@@ -94,13 +124,18 @@ void GestorAudio::inicializar() {
 }
 
 void GestorAudio::cargarEfecto(const QString &nombre, const QString &archivo, qreal volumen) {
-    QString ruta = carpetaBase + "/efectos/" + archivo;
+    QString rutaRecurso = ":/audio/efectos/" + archivo;
+    QString ruta = (QFile::exists(rutaRecurso))
+                       ? rutaRecurso
+                       : carpetaBase + "/efectos/" + archivo;
     if (!QFile::exists(ruta)) {
         return;
     }
 
     QSoundEffect *fx = new QSoundEffect(this);
-    fx->setSource(QUrl::fromLocalFile(ruta));
+    fx->setSource(ruta.startsWith(":/")
+                      ? QUrl("qrc" + ruta)
+                      : QUrl::fromLocalFile(ruta));
     fx->setLoopCount(1);
     fx->setVolume(volumen);
     efectos.insert(nombre, fx);
@@ -111,18 +146,24 @@ void GestorAudio::reproducirMusica(const QString &archivo) {
     if (carpetaBase.isEmpty()) {
         return;
     }
-    if (musicaActual == archivo && reproductorMusica->isPlaying()) {
+    if (musicaActual == archivo &&
+        reproductorMusica->playbackState() == QMediaPlayer::PlayingState) {
         return;
     }
 
-    QString ruta = carpetaBase + "/musica/" + archivo;
+    QString rutaRecurso = ":/audio/musica/" + archivo;
+    QString ruta = (QFile::exists(rutaRecurso))
+                       ? rutaRecurso
+                       : carpetaBase + "/musica/" + archivo;
     if (!QFile::exists(ruta)) {
         return;
     }
 
     reproductorMusica->stop();
     musicaActual = archivo;
-    reproductorMusica->setSource(QUrl::fromLocalFile(ruta));
+    reproductorMusica->setSource(ruta.startsWith(":/")
+                                     ? QUrl("qrc" + ruta)
+                                     : QUrl::fromLocalFile(ruta));
     aplicarVolumenes();
     reproductorMusica->play();
 }
@@ -136,18 +177,24 @@ void GestorAudio::reproducirAmbiente(const QString &archivo) {
     if (carpetaBase.isEmpty()) {
         return;
     }
-    if (ambienteActual == archivo && reproductorAmbiente->isPlaying()) {
+    if (ambienteActual == archivo &&
+        reproductorAmbiente->playbackState() == QMediaPlayer::PlayingState) {
         return;
     }
 
-    QString ruta = carpetaBase + "/ambiente/" + archivo;
+    QString rutaRecurso = ":/audio/ambiente/" + archivo;
+    QString ruta = (QFile::exists(rutaRecurso))
+                       ? rutaRecurso
+                       : carpetaBase + "/ambiente/" + archivo;
     if (!QFile::exists(ruta)) {
         return;
     }
 
     reproductorAmbiente->stop();
     ambienteActual = archivo;
-    reproductorAmbiente->setSource(QUrl::fromLocalFile(ruta));
+    reproductorAmbiente->setSource(ruta.startsWith(":/")
+                                       ? QUrl("qrc" + ruta)
+                                       : QUrl::fromLocalFile(ruta));
     aplicarVolumenes();
     reproductorAmbiente->play();
 }
@@ -162,13 +209,18 @@ void GestorAudio::reproducirCinematica(const QString &archivo) {
         return;
     }
 
-    QString ruta = carpetaBase + "/cinematicas/" + archivo;
+    QString rutaRecurso = ":/audio/cinematicas/" + archivo;
+    QString ruta = (QFile::exists(rutaRecurso))
+                       ? rutaRecurso
+                       : carpetaBase + "/cinematicas/" + archivo;
     if (!QFile::exists(ruta)) {
         return;
     }
 
     reproductorCinematica->stop();
-    reproductorCinematica->setSource(QUrl::fromLocalFile(ruta));
+    reproductorCinematica->setSource(ruta.startsWith(":/")
+                                         ? QUrl("qrc" + ruta)
+                                         : QUrl::fromLocalFile(ruta));
     aplicarVolumenes();
     reproductorCinematica->play();
 }
@@ -212,9 +264,9 @@ bool GestorAudio::estaSilenciado() const {
 
 void GestorAudio::aplicarVolumenes() {
     if (silenciado) {
-        reproductorMusica->setVolume(0.0);
-        reproductorAmbiente->setVolume(0.0);
-        reproductorCinematica->setVolume(0.0);
+        salidaMusica->setVolume(0.0);
+        salidaAmbiente->setVolume(0.0);
+        salidaCinematica->setVolume(0.0);
         for (QSoundEffect *fx : efectos) {
             if (fx != nullptr) fx->setVolume(0.0);
         }
@@ -222,9 +274,9 @@ void GestorAudio::aplicarVolumenes() {
     }
 
     qreal factorPausa = enPausa ? 0.30 : 1.0;
-    reproductorMusica->setVolume(0.32 * factorPausa);
-    reproductorAmbiente->setVolume(0.24 * factorPausa);
-    reproductorCinematica->setVolume(0.75);
+    salidaMusica->setVolume(0.32 * factorPausa);
+    salidaAmbiente->setVolume(0.24 * factorPausa);
+    salidaCinematica->setVolume(0.75);
 
     for (auto it = efectos.begin(); it != efectos.end(); ++it) {
         if (it.value() != nullptr) {

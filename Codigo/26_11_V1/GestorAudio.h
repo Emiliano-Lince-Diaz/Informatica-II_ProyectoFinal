@@ -3,6 +3,8 @@
 
 #include <QObject>
 #include <QSoundEffect>
+#include <QMediaPlayer>
+#include <QAudioOutput>
 #include <QMap>
 #include <QString>
 #include <QElapsedTimer>
@@ -43,9 +45,12 @@ private:
     QString musicaActual;
     QString ambienteActual;
 
-    QSoundEffect *reproductorMusica;
-    QSoundEffect *reproductorAmbiente;
-    QSoundEffect *reproductorCinematica;
+    QMediaPlayer *reproductorMusica;
+    QMediaPlayer *reproductorAmbiente;
+    QMediaPlayer *reproductorCinematica;
+    QAudioOutput *salidaMusica;
+    QAudioOutput *salidaAmbiente;
+    QAudioOutput *salidaCinematica;
 
     QMap<QString, QSoundEffect*> efectos;
     QMap<QString, qreal> volumenesBaseEfectos;

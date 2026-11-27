@@ -84,7 +84,8 @@ FORMS += \
     mainwindow.ui
 
 RESOURCES += \
-    Sprites.qrc
+    Sprites.qrc \
+    Audio_Kapax/audio.qrc
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

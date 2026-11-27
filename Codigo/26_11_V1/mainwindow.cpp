@@ -27,9 +27,11 @@
 #include <QCoreApplication>
 #include <QFile>
 #include <QFileInfo>
+#include <QDebug>
 #include <QtMath>
 #include <algorithm>
 #include <cmath>
+#include <stdexcept>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -94,7 +96,11 @@ MainWindow::MainWindow(QWidget *parent)
     setCentralWidget(pilaCentral);
 
     cargarSprites();
-    audio->inicializar();
+    try {
+        audio->inicializar();
+    } catch (const std::runtime_error &error) {
+        qWarning() << error.what() << "- el juego continuara sin audio.";
+    }
     audio->reproducirMusica("menu.wav");
 
     connect(timer, &QTimer::timeout, this, &MainWindow::actualizarFrame);
