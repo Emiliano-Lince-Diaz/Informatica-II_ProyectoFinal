@@ -1,0 +1,44 @@
+<RCC>
+ <qresource prefix="/audio">
+  <file>ambiente/rio.wav</file>
+  <file>ambiente/rio_violento.wav</file>
+  <file>ambiente/selva.wav</file>
+  <file>cinematicas/game_over.wav</file>
+  <file>cinematicas/intro.wav</file>
+  <file>cinematicas/transicion.wav</file>
+  <file>cinematicas/victoria.wav</file>
+  <file>efectos/aterrizaje.wav</file>
+  <file>efectos/aturdido.wav</file>
+  <file>efectos/choque_obstaculo.wav</file>
+  <file>efectos/doble_salto.wav</file>
+  <file>efectos/entrada_agua.wav</file>
+  <file>efectos/fin_poder.wav</file>
+  <file>efectos/fortachon.wav</file>
+  <file>efectos/game_over.wav</file>
+  <file>efectos/golpe_enemigo.wav</file>
+  <file>efectos/impacto_proyectil.wav</file>
+  <file>efectos/inicio_nivel.wav</file>
+  <file>efectos/lanzamiento.wav</file>
+  <file>efectos/lodazal.wav</file>
+  <file>efectos/menu_confirmar.wav</file>
+  <file>efectos/menu_seleccion.wav</file>
+  <file>efectos/mordedura_vibora.wav</file>
+  <file>efectos/nado_brazada.wav</file>
+  <file>efectos/nivel_completado.wav</file>
+  <file>efectos/paso_tierra.wav</file>
+  <file>efectos/pausa.wav</file>
+  <file>efectos/perder_vida.wav</file>
+  <file>efectos/pesado.wav</file>
+  <file>efectos/recoger_gift.wav</file>
+  <file>efectos/remolino.wav</file>
+  <file>efectos/resbalon.wav</file>
+  <file>efectos/saltarin.wav</file>
+  <file>efectos/salto.wav</file>
+  <file>efectos/tiempo_bajo.wav</file>
+  <file>efectos/tronco_choque.wav</file>
+  <file>efectos/victoria.wav</file>
+  <file>musica/menu.wav</file>
+  <file>musica/nivel1_selva.wav</file>
+  <file>musica/nivel2_rio.wav</file>
+ </qresource>
+</RCC>

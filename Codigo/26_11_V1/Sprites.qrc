@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="Sprites.png">Sprites.png</file>
+        <file alias="Kapax_Nadando.png">Kapax_Nadando.png</file>
+    </qresource>
+</RCC>
