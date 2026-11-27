@@ -1399,17 +1399,12 @@ void MainWindow::renderizarEscenaRio(NivelRio *rio) {
             const float cy = rem->getY() + rem->getAlto() * 0.5f;
             const float radio = rem->getRadio();
             if (!spritesVortice.isEmpty()) {
-                escena->addEllipse(cx - radio, cy - radio, radio * 2.0f, radio * 2.0f,
-                                   QPen(QColor(200, 230, 255, 90), 2), QBrush(QColor(10, 60, 110, 28)));
                 const int frame = static_cast<int>(tiempoAnimacion * 7.0f) % spritesVortice.size();
                 const int diametro = qMax(1, static_cast<int>(radio * 1.8f));
                 const QPixmap vortice = spritesVortice[frame].scaled(
                     diametro, diametro, Qt::KeepAspectRatio, Qt::SmoothTransformation);
                 escena->addPixmap(vortice)->setPos(
                     cx - vortice.width() * 0.5f, cy - vortice.height() * 0.5f);
-                const float nucleo = rem->getRadioNucleo();
-                escena->addEllipse(cx - nucleo, cy - nucleo, nucleo * 2.0f, nucleo * 2.0f,
-                                   QPen(QColor(5, 20, 40, 150), 1), QBrush(QColor(5, 20, 40, 35)));
             } else {
                 escena->addEllipse(cx - radio, cy - radio, radio * 2.0f, radio * 2.0f,
                                    QPen(QColor(200, 230, 255, 90), 2), QBrush(QColor(10, 60, 110, 90)));
